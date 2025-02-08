@@ -50,7 +50,7 @@ export function useWeather() {
   const { data, error, isFetching, isError } = useQuery({
     queryKey: ["weather", location],
     queryFn: () => {
-      if (!location) return null;
+      if (!location) return Promise.resolve(null);
       return fetchWeatherData({ queryKey: ["weather", location] });
     },
     enabled: !!location,
