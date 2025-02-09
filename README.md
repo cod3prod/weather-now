@@ -23,6 +23,7 @@ TanStack Query는 React 애플리케이션에서 데이터 fetching, 캐싱, 동
 - `useQuery`: 데이터 가져오기, 캐싱, 상태 관리
 - `enabled`: 특정 조건에 맞을 때만 데이터를 로드
 - `staleTime`: 데이터가 `신선한 상태`로 유지되는 시간 설정
+- `placeholderData`: 데이터를 요청하는 동안 `임시 데이터`를 유지
 
 ```typescript
 const fetchWeatherData = async ({
@@ -45,11 +46,12 @@ const fetchWeatherData = async ({
 const { data, error, isFetching, isError } = useQuery({
   queryKey: ["weather", location],
   queryFn: () => {
-    if (!location) return null;
+    if (!location) return Promise.resolve(null);
     return fetchWeatherData({ queryKey: ["weather", location] });
   },
   enabled: !!location,
   staleTime: 5 * 1000,
+  placeholderData: (prev) => prev,
 });
 ```
 
@@ -58,7 +60,7 @@ const { data, error, isFetching, isError } = useQuery({
 ### 환경 변수
 
 ```
-NEXT_PUBLIC_WEATHER_API_KEY=<OpenWeatherMap API> 
+NEXT_PUBLIC_WEATHER_API_KEY=<OpenWeatherMap API>
 ```
 
 ### 프로젝트 실행
