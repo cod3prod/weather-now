@@ -29,7 +29,7 @@ export function useWeather() {
     longitude: number;
   } | null>(null);
 
-  const [ geolocationError, setGeolocationError ] = useState<string | null>(null);
+  const [geolocationError, setGeolocationError] = useState<string | null>(null);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -55,6 +55,7 @@ export function useWeather() {
     },
     enabled: !!location,
     staleTime: 5 * 1000,
+    placeholderData: (prev) => prev,
   });
 
   return { data, error, isFetching, isError, geolocationError };
