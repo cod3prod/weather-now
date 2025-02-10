@@ -8,6 +8,7 @@ export function useWeather() {
     latitude: number;
     longitude: number;
   } | null>(null);
+  const [isGeoLoading, setIsGeoLoading] = useState(false);
   const [geolocationError, setGeolocationError] = useState<string | null>(null);
 
   const fetchWeatherData = async ({
@@ -34,27 +35,40 @@ export function useWeather() {
       const { latitude, longitude } = pos.coords;
       setGeolocationError(null);
       setLocation({ latitude, longitude });
+      setIsGeoLoading(false);
     };
 
     const geoError = (err: GeolocationPositionError) => {
       setGeolocationError(err.message);
       console.error("Error getting location:", err);
+      setIsGeoLoading(false);
     };
 
     const geoOptions = {
-      enableHighAccuracy: false,
-      timeout: 5000,
-      maximumAge: 0,
+      enableHighAccuracy: true,
+      timeout: 60 * 1000,
+      maximumAge: 15 * 60 * 1000,
     };
 
-    navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
-  }, [setGeolocationError, setLocation]);
+    const fetchGeoLocation = async () => {
+      setIsGeoLoading(true);
+      navigator.geolocation.getCurrentPosition(
+        geoSuccess,
+        geoError,
+        geoOptions
+      );
+    };
 
-  const { data, error, isFetching, isError } = useQuery({
+    fetchGeoLocation();
+  }, [setGeolocationError, setIsGeoLoading, setLocation]);
+
+  const { data, error, isFetching } = useQuery({
     queryKey: ["weather", location?.latitude || 0, location?.longitude || 0],
     queryFn: fetchWeatherData,
     enabled: !!location,
+    staleTime: 15 * 60 * 1000,
+    gcTime: 30 * 60 * 1000
   });
 
-  return { data, error, isFetching, isError, geolocationError };
+  return { data, error, isFetching, isGeoLoading, geolocationError };
 }
