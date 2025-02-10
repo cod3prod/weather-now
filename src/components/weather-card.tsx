@@ -7,10 +7,8 @@ import {
   FaWind,
 } from "react-icons/fa";
 
-export default function WeatherCard({ data }: { data: WeatherResponse  | null }) {
-  console.log("test", data);
-
-  if(!data) return null;
+export default function WeatherCard({ data }: { data: WeatherResponse }) {
+  // console.log("debug", data);
 
   return (
     <div className="bg-white/20 backdrop-blur-lg rounded-2xl shadow-2xl p-6 w-full max-w-md">

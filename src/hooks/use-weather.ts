@@ -54,7 +54,6 @@ export function useWeather() {
       return fetchWeatherData({ queryKey: ["weather", location] });
     },
     enabled: !!location,
-    staleTime: 5 * 1000,
     placeholderData: (prev) => prev,
   });
 
